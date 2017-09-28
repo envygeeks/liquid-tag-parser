@@ -74,4 +74,38 @@ describe Liquid::Tag::Parser do
       }
     })
   end
+
+  #
+
+  context "with argv1" do
+    it "should make it argv1" do
+      data = described_class.new("a").args
+      expect(data).to(have_key(:argv1))
+      expect(data).to(eq({
+        :argv1 => "a"
+      }))
+    end
+
+    #
+
+    it "does not use the val when it's key=val" do
+      data = described_class.new("a=1").args
+      expect(data).to_not(have_key(:argv1))
+      expect(data).to(eq({
+        :a => 1
+      }))
+    end
+
+    #
+
+    context "booleans" do
+      it "does not allow negative" do
+        data = described_class.new("!false").args
+        expect(data).to_not(have_key(:argv1))
+        expect(data).to(eq({
+          :false => false
+        }))
+      end
+    end
+  end
 end
