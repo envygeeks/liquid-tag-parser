@@ -5,6 +5,36 @@
 require "rspec/helper"
 
 describe Liquid::Tag::Parser do
+  describe "#to_html" do
+    it "does not include negative booleans" do
+      expect(described_class.new("!a").to_html).
+        to(eq(""))
+    end
+
+    #
+
+    it "does not include hashes or array's" do
+      expect(described_class.new("a=1 a=2 b:c=3").to_html).
+        to(eq(""))
+    end
+
+    #
+
+    it "does not include argv1" do
+      expect(described_class.new("a").to_html).
+        to(eq(""))
+    end
+
+    #
+
+    it "converts args to key val" do
+      expect(described_class.new("a=1").to_html).
+        to(eq("a=\"1\""))
+    end
+  end
+
+  #
+
   it "doesn't deep parse keys with quotes" do
     expect(described_class.new("a='b=c'").args).to(eq({
       :a => "b=c"
