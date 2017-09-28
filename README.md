@@ -19,7 +19,7 @@ Typically you would take the raw argument data you get from Liquid and ship that
 ### With `argv1`
 
 ```ruby
-Liquid::Tag::Parser.new("a b:1 c:2 !false d:e:f:3\\:4\\:5 @true").args
+Liquid::Tag::Parser.new("a b=1 c=2 !false d:e:f='3 4' @true").args
 # => {
 #   :argv1 => "a",
 #   :false=>false,
@@ -28,7 +28,7 @@ Liquid::Tag::Parser.new("a b:1 c:2 !false d:e:f:3\\:4\\:5 @true").args
 #   :c=>"2",
 #   :d=>{
 #     :e=>{
-#       :f => "3:4:5"
+#       :f => "3 4"
 #     }
 #   }
 # }
@@ -37,15 +37,15 @@ Liquid::Tag::Parser.new("a b:1 c:2 !false d:e:f:3\\:4\\:5 @true").args
 ### Without argv1
 
 ```ruby
-Liquid::Tag::Parser.new("b:1 c:2 !false d:e:f:3\\:4\\:5 @true").args
+Liquid::Tag::Parser.new("a=1 b=2 !false c:d:e=3:4:5 @true").args
 # => {
-#   :false=>false,
-#   :true=>true,
-#   :b=>"1",
-#   :c=>"2",
-#   :d=>{
-#     :e=>{
-#       :f => "3:4:5"
+#   :false => false,
+#   :true  => true,
+#   :a => "1",
+#   :b => "2",
+#   :c => {
+#     :d  => {
+#       :e => "3:4:5"
 #     }
 #   }
 # }
@@ -54,10 +54,26 @@ Liquid::Tag::Parser.new("b:1 c:2 !false d:e:f:3\\:4\\:5 @true").args
 ### With Array's
 
 ```ruby
-Liquid::Tag::Parser.new("a:1 a:2 a:3").args
+Liquid::Tag::Parser.new("a=1 a=2 a=3").args
 # => {
 #   :a => [
 #     1, 2, 3
 #   ]
+# }
+```
+
+### Escaping
+
+```ruby
+Liquid::Tag::Parser.new("a=1=2").args
+# => {
+#   :"a=1" => 2
+# }
+```
+
+```ruby
+Liquid::Tag::Parser.new("a='1=2'").args
+# => {
+#   :"a" => "1=2"
 # }
 ```

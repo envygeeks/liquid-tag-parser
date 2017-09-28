@@ -7,16 +7,6 @@ require "extras/hash"
 
 module Liquid
   module Tag
-
-    # --
-    # Examples:
-    #   - {% tag value argument:value %}
-    #   - {% tag value "argument:value" %}
-    #   - {% tag value argument:"I have spaces" %}
-    #   - {% tag value argument:value\:with\:colon %}
-    #   - {% tag value argument:"I can even escape \\: here too!" %}
-    #   - {% tag value proxy:key:value %}
-    # --
     class Parser
       attr_reader :args, :raw_args
       extend Forwardable
@@ -30,9 +20,20 @@ module Liquid
       def_delegator :@args, :[]
 
       # --
-      def initialize(raw, defaults: {})
-        @args = {}
+      BOOLEAN_REGEXP = /^(?<!\\)(\!|@)/
+      NEGATIVE_BOOLEAN_REGEXP = /^(?<!\\)\!/
+      POSITIVE_BOOLEAN_REGEXP = /^(?<!\\)\@/
+      KEY_REGEXP = /\b(?<!\\):/
+
+      # --
+      def initialize(raw, defaults: {}, sep: "=")
+        @sep = sep
+        @rsep = Regexp.escape(sep)
+        @escaped_sep_regexp = /\\#{@rsep}/
+        @sep_regexp = /\b(?<!\\)#{@rsep}/
+        @escaped_sep = "\\#{@sep}"
         @defaults = defaults
+        @args = {}
         @raw = raw
 
         parse
@@ -40,62 +41,67 @@ module Liquid
 
       # --
       def to_html(skip: [])
-        @args.map do |k, v|
-          next if k == :argv1 || skip.include?(k) || v == false || \
-                  v.is_a?(Hash) || v.is_a?(Array)
+        @args.each_with_object("") do |k, s|
+          next if k == :argv1 || skip.include?(k) ||
+            v == false || v.is_a?(Hash) ||
+            v.is_a?(Array)
 
-          v == true ? k.to_s : "#{k}=\"#{v}\""
-        end.flatten.compact.join("\s")
+          s << " "
+          s << v == true ? k.to_s : "#{k}=\"#{v}\""
+          s.strip
+        end
       end
 
       # --
       private
       def parse
-        @args = @defaults.deep_merge(from_shellwords.each_with_index. \
-        each_with_object({}) do |(k, i), h|
+        args, hash = from_shellwords, {}
+        if args.first !~ BOOLEAN_REGEXP && args.first !~ KEY_REGEXP
+          hash.update({
+            :argv1 => args.delete(0)
+          })
+        end
 
-          nk = k.split(/\b(?<!\\):/).map do |v|
-            o = v = v.gsub(/\b\\:/, ":")
+        @args = @defaults.deep_merge(args.each_with_object({}) do |k, h, out = h|
+          keys, _, val = k.rpartition(@sep_regexp)
+          keys = keys.split(KEY_REGEXP).map(&:to_sym)
+          val  = val.gsub(@escaped_sep_regexp, @sep)
 
-            o = v.to_i if v =~ /^\d+$/
-            o = v.to_f if v =~ /^\d+\.\d++$/
-            o = false if v == "false"
-            o = true if v == "true"
+          # @true, @false will not split or map right.
+          if keys.size == 0 && val =~ BOOLEAN_REGEXP
+            keys = [
+              val
+            ]
 
-            o
-          end
-
-          nk[0] = nk[0].to_sym
-          if i == 0 && nk.size == 1 && nk[0] !~ /^(@|!)/
-            h[:argv1] = nk[0].to_s
-
-          elsif nk.size > 2
-            oh = h[nk[0]] ||= {}
-            nk[1...-2].each do |v|
-              oh = oh[v.to_sym] ||= {
-                #
-              }
+          elsif keys.size > 1
+            h = h[keys[0]] ||= {}
+            keys[1...-1].each do |sk|
+              h = h[sk] ||= {}
             end
-
-            oh[nk[-2].to_sym] = nk[-1]
-          elsif nk.size == 2 && h[nk[0]]
-            h[nk[0]] = [h[nk[0]]].flatten << nk[1]
-
-          else
-            h[nk[0]] = nk[1] if nk.size == 2
-            h[$1.to_sym] = false if nk.size == 1 && nk[0] =~ /^(?<!\\)\!(.*)/
-            h[nk[0].to_s.gsub(/^(?<!\\)\@/, "").to_sym] = true if nk.size == 1 \
-              && nk[0] !~ /^(?<!\\)\!/
           end
 
-          h
+          val = false if val == "false"
+          val = val.to_f if val =~ /^\d+\.\d+$/
+          val = false if val =~ NEGATIVE_BOOLEAN_REGEXP
+          val = true  if val =~ POSITIVE_BOOLEAN_REGEXP
+          val = val.to_i if val =~ /^\d+$/
+          val = true if val == "true"
+
+          key = keys.last.to_s.gsub(BOOLEAN_REGEXP, "").to_sym
+          h[key] << val if h[key].is_a?(Array)
+          h[key] = [h[key]] << val if h[key]
+          h[key] = val unless h[key]
+
+          out
         end)
       end
 
       # --
       private
       def from_shellwords
-        Shellwords.shellwords(@raw.gsub(/\b\\:/, "\\\\\\:"))
+        Shellwords.shellwords(@raw.gsub(/('|")([^\1]+)\1/) do |v|
+          v.gsub(@sep_regexp, @escaped_sep)
+        end)
       end
     end
   end
