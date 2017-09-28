@@ -41,15 +41,14 @@ module Liquid
 
       # --
       def to_html(skip: [])
-        @args.each_with_object("") do |k, s|
+        @args.each_with_object([]) do |(k, v), a|
           next if k == :argv1 || skip.include?(k) ||
             v == false || v.is_a?(Hash) ||
             v.is_a?(Array)
 
-          s << " "
-          s << v == true ? k.to_s : "#{k}=\"#{v}\""
-          s.strip
-        end
+
+          a << (v == true ? k.to_s : "#{k}=\"#{v}\"")
+        end.join(" ")
       end
 
       # --
