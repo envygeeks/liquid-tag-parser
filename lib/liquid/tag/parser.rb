@@ -56,13 +56,15 @@ module Liquid
       private
       def parse
         args, hash = from_shellwords, {}
-        if args.first !~ BOOLEAN_REGEXP && args.first !~ KEY_REGEXP
-          hash.update({
-            :argv1 => args.delete(0)
-          })
+        if args.first !~ BOOLEAN_REGEXP && args.first !~ KEY_REGEXP \
+        && args.first !~ @sep_regexp
+
+          hash = {
+            :argv1 => args.delete_at(0)
+          }
         end
 
-        @args = @defaults.deep_merge(args.each_with_object({}) do |k, h, out = h|
+        @args = @defaults.deep_merge(args.each_with_object(hash) do |k, h, out = h|
           keys, _, val = k.rpartition(@sep_regexp)
           keys = keys.split(KEY_REGEXP).map(&:to_sym)
           val  = val.gsub(@escaped_sep_regexp, @sep)
