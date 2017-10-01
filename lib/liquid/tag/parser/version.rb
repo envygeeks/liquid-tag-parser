@@ -3,7 +3,7 @@
 # Encoding: utf-8
 
 module Liquid
-  module Tag
+  class Tag
     class Parser
       VERSION = "1.0.0"
     end

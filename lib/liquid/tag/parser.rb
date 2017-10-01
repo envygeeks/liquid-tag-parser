@@ -4,9 +4,10 @@
 
 require "forwardable"
 require "extras/hash"
+require "liquid"
 
 module Liquid
-  module Tag
+  class Tag
     class Parser
       attr_reader :args, :raw_args
       extend Forwardable
