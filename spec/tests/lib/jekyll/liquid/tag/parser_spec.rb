@@ -37,7 +37,7 @@ describe Liquid::Tag::Parser do
 
   it "doesn't deep parse keys with quotes" do
     expect(described_class.new("a='b=c'").args).to(eq({
-      :a => "b=c"
+      a: "b=c"
     }))
   end
 
@@ -45,7 +45,7 @@ describe Liquid::Tag::Parser do
 
   it "support array's" do
     expect(described_class.new("a=1 a=2 b=1 b=2").args).to(eq({
-      :a => [1, 2], :b => [1, 2]
+      a: [1, 2], b: [1, 2]
     }))
   end
 
@@ -54,7 +54,7 @@ describe Liquid::Tag::Parser do
   context "boolean" do
     it "works" do
       expect(described_class.new("@true").args).to(eq({
-        :true => true
+        true: true
       }))
     end
 
@@ -70,8 +70,8 @@ describe Liquid::Tag::Parser do
 
     it "supports sub-booleans" do
       expect(described_class.new("@key1:key2").args).to(eq({
-        :key1 => {
-          :key2 => true
+        key1: {
+          key2: true
         }
       }))
     end
@@ -82,7 +82,7 @@ describe Liquid::Tag::Parser do
   context "reverse boolean" do
     it "works" do
       expect(described_class.new("!false").args).to(eq({
-        :false => false
+        false: false
       }))
     end
 
@@ -99,8 +99,8 @@ describe Liquid::Tag::Parser do
 
   it "supports deep hashes" do
     expect(described_class.new("a:b=c").args).to(eq({
-      :a => {
-        :b => "c"
+      a: {
+        b: "c"
       }
     }))
   end
@@ -109,8 +109,8 @@ describe Liquid::Tag::Parser do
 
   it "supports custom separators" do
     expect(described_class.new("a:b:'c:d'", sep: ":").args).to eq({
-      :a => {
-        :b => "c:d"
+      a: {
+        b: "c:d"
       }
     })
   end
@@ -122,7 +122,7 @@ describe Liquid::Tag::Parser do
       data = described_class.new("a").args
       expect(data).to(have_key(:argv1))
       expect(data).to(eq({
-        :argv1 => "a"
+        argv1: "a"
       }))
     end
 
@@ -143,7 +143,7 @@ describe Liquid::Tag::Parser do
         data = described_class.new("!false").args
         expect(data).to_not(have_key(:argv1))
         expect(data).to(eq({
-          :false => false
+          false: false
         }))
       end
     end
