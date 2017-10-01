@@ -66,16 +66,15 @@ module Liquid
 
         @args = @defaults.deep_merge(args.each_with_object(hash) do |k, h, out = h|
           keys, _, val = k.rpartition(@sep_regexp)
-          keys = keys.split(KEY_REGEXP).map(&:to_sym)
+
           val  = val.gsub(@escaped_sep_regexp, @sep)
+          if keys.empty? && val =~ BOOLEAN_REGEXP
+            # @true, @false will not map right.
+            keys = val.gsub(BOOLEAN_REGEXP, "")
+          end
 
-          # @true, @false will not split or map right.
-          if keys.size == 0 && val =~ BOOLEAN_REGEXP
-            keys = [
-              val
-            ]
-
-          elsif keys.size > 1
+          keys = keys.split(KEY_REGEXP).map(&:to_sym)
+          if keys.size > 1
             h = h[keys[0]] ||= {}
             keys[1...-1].each do |sk|
               h = h[sk] ||= {}
@@ -89,7 +88,7 @@ module Liquid
           val = val.to_i if val =~ /^\d+$/
           val = true if val == "true"
 
-          key = keys.last.to_s.gsub(BOOLEAN_REGEXP, "").to_sym
+          key = keys.last.to_sym
           h[key] << val if h[key].is_a?(Array)
           h[key] = [h[key]] << val if h[key]
           h[key] = val unless h[key]
