@@ -77,5 +77,40 @@ Liquid::Tag::Parser.new("a='1=2'").args
 #   "a": "1=2"
 # }
 ```
+
+### Booleans
+#### True
+
+```ruby
+Liquid::Tag::Parser.new("@true").args
+# => {
+#   true: true
+# }
+```
+
+```ruby
+Liquid::Tag::Parser.new("@key1:key2").args
+# => {
+#   key1: {
+#     key2: true
+#   }
+# }
+```
+
+#### False
+
+```ruby
+Liquid::Tag::Parser.new("!false").args
+# => {
+#   false: false
+# }
+```
+
+```ruby
+Liquid::Tag::Parser.new("!key1:key2").args
+# => {
+#   key1: {
+#     key2: false
+#   }
 # }
 ```
