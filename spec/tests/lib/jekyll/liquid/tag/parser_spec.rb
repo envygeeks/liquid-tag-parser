@@ -93,6 +93,16 @@ describe Liquid::Tag::Parser do
         :false
       ]))
     end
+
+    #
+
+    it "supports sub-booleans" do
+      expect(described_class.new("!key1:key2").args).to(eq({
+        key1: {
+          key2: false
+        }
+      }))
+    end
   end
 
   #
