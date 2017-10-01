@@ -5,7 +5,7 @@
 module Liquid
   class Tag
     class Parser
-      VERSION = "1.0.0"
+      VERSION = "1.0.2"
     end
   end
 end
