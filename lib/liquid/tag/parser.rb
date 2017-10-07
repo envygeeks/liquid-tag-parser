@@ -2,23 +2,29 @@
 # Copyright: 2017 - MIT License
 # Encoding: utf-8
 
-require "forwardable"
 require "extras/hash"
+require "forwardable/extended"
 require "liquid"
 
 module Liquid
   class Tag
     class Parser
       attr_reader :args, :raw_args
-      extend Forwardable
+      extend Forwardable::Extended
 
-      def_delegator :@args, :each
-      def_delegator :@args, :to_enum
-      def_delegator :@args, :key?
-      def_delegator :@args, :to_h
-      def_delegator :@args, :map
-      def_delegator :@args, :[]=
-      def_delegator :@args, :[]
+      rb_delegate :each,        to: :@args
+      rb_delegate :to_enum,     to: :@args
+      rb_delegate :key?,        to: :@args
+      rb_delegate :to_h,        to: :@args
+      rb_delegate :map,         to: :@args
+      rb_delegate :[]=,         to: :@args
+      rb_delegate :[],          to: :@args
+      rb_delegate :merge,       to: :@args
+      rb_delegate :merge!,      to: :@args
+      rb_delegate :deep_merge,  to: :@args
+      rb_delegate :deep_merge!, to: :@args
+      rb_delegate :args_with_indifferent_access, to: :@args, \
+        alias_of: :with_indifferent_access
 
       # --
       BOOLEAN_REGEXP = /^(?<!\\)(\!|@)/
