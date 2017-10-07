@@ -6,6 +6,15 @@ require "rspec/helper"
 
 describe Liquid::Tag::Parser do
   describe "#to_html" do
+    describe "hash: true" do
+      it "should ship a hash" do
+        expect(described_class.new("a @b").to_html(hash: true)).
+        to(eq({
+          :b => true
+        }))
+      end
+    end
+
     it "does not include negative booleans" do
       expect(described_class.new("!a").to_html).
         to(eq(""))

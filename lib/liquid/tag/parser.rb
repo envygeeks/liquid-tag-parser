@@ -47,15 +47,19 @@ module Liquid
       end
 
       # --
-      def to_html(skip: [])
-        @args.each_with_object([]) do |(k, v), a|
+      def to_html(skip: [], hash: false)
+        out = @args.each_with_object(hash ? {} : []) do |(k, v), o|
           next if k == :argv1 || skip.include?(k) ||
             v == false || v.is_a?(Hash) ||
             v.is_a?(Array)
 
+          o[k] = v if hash
+          unless hash
+            o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
+          end
+        end
 
-          a << (v == true ? k.to_s : "#{k}=\"#{v}\"")
-        end.join(" ")
+        hash ? out : out.join(" ")
       end
 
       # --
