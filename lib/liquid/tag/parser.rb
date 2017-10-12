@@ -31,7 +31,7 @@ module Liquid
       NEGATIVE_BOOLEAN = /^(?<!\\)\!/
       BOOLEAN_QUOTE_REPLACEMENT = "\\1\\\\\\2"
       SHELLSPLIT = /\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m
-      BOOLEAN_QUOTE = /^('|")((?<!\\)@|(?<!\\)\!)/
+      BOOLEAN_QUOTE = /('|")((?<!\\)@|(?<!\\)\!)/
       POSITIVE_BOOLEAN = /^(?<!\\)\@/
       ESCAPED_BOOLEAN = /\\(@|\!)/
       KEY = /\b(?<!\\):/
