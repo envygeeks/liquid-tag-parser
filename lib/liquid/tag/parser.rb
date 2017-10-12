@@ -137,7 +137,7 @@ module Liquid
 
         line.scan(SHELLSPLIT) do |w, s, d, e, g, se|
           raise ArgumentError, "Unmatched double quote: #{line.inspect}" if g
-          field = field + (w || s || (d && d.gsub(/\\([$`"\\\n])/, '\\1')) \
+            field = field + (w || s || (d && d.gsub(/\\([$`"\\\n])/, '\\1')) \
             || e.gsub(/\\(.)/, '\\1'))
 
           if se
