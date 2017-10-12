@@ -100,7 +100,7 @@ module Liquid
 
           key = keys.last.to_sym
           h[key] << val if h[key].is_a?(Array)
-          h[key] = [h[key]] << val if h[key]
+          h[key] = [h[key]].flatten << val if h[key] && !h[key].is_a?(Array)
           h[key] = val unless h[key]
 
           out
