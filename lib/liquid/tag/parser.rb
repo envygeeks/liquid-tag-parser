@@ -26,11 +26,15 @@ module Liquid
       rb_delegate :args_with_indifferent_access, to: :@args, \
         alias_of: :with_indifferent_access
 
-      # --
+      FLOAT_REGEXP = /^\d+\.\d+$/
       BOOLEAN_REGEXP = /^(?<!\\)(\!|@)/
       NEGATIVE_BOOLEAN_REGEXP = /^(?<!\\)\!/
+      BOOLEAN_QUOTE_REGEXP = /^('|")((?<!\\)@|(?<!\\)\!)/
+      BOOLEAN_QUOTE_REPLACEMENT = "\\1\\\\\\2"
       POSITIVE_BOOLEAN_REGEXP = /^(?<!\\)\@/
+      DESCAPED_BOOLEAN_REGEXP = /\\(@|\!)/
       KEY_REGEXP = /\b(?<!\\):/
+      INT_REGEXP = /^\d+$/
 
       # --
       def initialize(raw, defaults: {}, sep: "=")
@@ -92,12 +96,17 @@ module Liquid
             end
           end
 
+
           val = false if val == "false"
-          val = val.to_f if val =~ /^\d+\.\d+$/
+          val = val.to_f if val =~ FLOAT_REGEXP
           val = false if val =~ NEGATIVE_BOOLEAN_REGEXP
           val = true  if val =~ POSITIVE_BOOLEAN_REGEXP
-          val = val.to_i if val =~ /^\d+$/
+          val = val.to_i if val =~ INT_REGEXP
           val = true if val == "true"
+
+          if val.is_a?(String)
+            then val = val.gsub(DESCAPED_BOOLEAN_REGEXP, "\\1")
+          end
 
           key = keys.last.to_sym
           h[key] << val if h[key].is_a?(Array)
@@ -112,7 +121,8 @@ module Liquid
       private
       def from_shellwords
         Shellwords.shellwords(@raw.gsub(/('|")([^\1]+)\1/) do |v|
-          v.gsub(@sep_regexp, @escaped_sep)
+          v.gsub(BOOLEAN_QUOTE_REGEXP, BOOLEAN_QUOTE_REPLACEMENT).
+            gsub(@sep_regexp, @escaped_sep)
         end)
       end
     end

@@ -61,6 +61,12 @@ describe Liquid::Tag::Parser do
   #
 
   context "boolean" do
+    it "does not convert quoted @" do
+      expect(described_class.new("a=\"@true\"").args).to(eq({
+        a: "@true"
+      }))
+    end
+
     it "works" do
       expect(described_class.new("@true").args).to(eq({
         true: true
