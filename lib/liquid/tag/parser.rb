@@ -83,6 +83,7 @@ module Liquid
             keys = val.gsub(BOOLEAN_REGEXP, "")
           end
 
+          keys, val = val, nil if keys.empty?
           keys = keys.split(KEY_REGEXP).map(&:to_sym)
           if keys.size > 1
             h = h[keys[0]] ||= {}

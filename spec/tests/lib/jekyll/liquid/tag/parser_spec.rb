@@ -167,4 +167,14 @@ describe Liquid::Tag::Parser do
       end
     end
   end
+
+  context "with a nil value" do
+    it "flips the value and the key" do
+      data = described_class.new("argv1 key").args
+      expect(data).to(eq({
+        argv1: "argv1",
+        key: nil,
+      }))
+    end
+  end
 end
