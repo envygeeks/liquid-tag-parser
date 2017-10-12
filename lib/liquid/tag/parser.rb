@@ -30,6 +30,7 @@ module Liquid
       BOOLEAN_REGEXP = /^(?<!\\)(\!|@)/
       NEGATIVE_BOOLEAN_REGEXP = /^(?<!\\)\!/
       BOOLEAN_QUOTE_REGEXP = /^('|")((?<!\\)@|(?<!\\)\!)/
+      SHELLWORDS_REGEXP = /\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m
       BOOLEAN_QUOTE_REPLACEMENT = "\\1\\\\\\2"
       POSITIVE_BOOLEAN_REGEXP = /^(?<!\\)\@/
       DESCAPED_BOOLEAN_REGEXP = /\\(@|\!)/
@@ -117,13 +118,33 @@ module Liquid
         end)
       end
 
-      # --
       private
       def from_shellwords
-        Shellwords.shellwords(@raw.gsub(/('|")([^\1]+)\1/) do |v|
+        shellsplit(@raw.gsub(/('|")([^\1]+)\1/) do |v|
           v.gsub(BOOLEAN_QUOTE_REGEXP, BOOLEAN_QUOTE_REPLACEMENT).
             gsub(@sep_regexp, @escaped_sep)
         end)
+      end
+
+      # Because Shellwords.shellwords on < 2.4 has problems
+      # with quotes and \\, we ported this back, this pretty
+      # much the same thing except we replace some of the
+      # questionable code like `String.new`
+      private
+      def shellsplit(line)
+        out, field = [], ""
+
+        line.scan(SHELLWORDS_REGEXP) do |w, s, d, e, g, se|
+          raise ArgumentError, "Unmatched double quote: #{line.inspect}" if g
+          field = field + (w || s || (d && d.gsub(/\\([$`"\\\n])/, '\\1')) \
+          || e.gsub(/\\(.)/, '\\1'))
+          if se
+            out << field
+            field = ""
+          end
+        end
+
+        out
       end
     end
   end
