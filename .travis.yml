@@ -9,6 +9,10 @@ rvm:
   - &ruby23 2.3
   - &jruby jruby-9.1.12.0
   - &rhead ruby-head
+env:
+  matrix:
+    - LIQUID_VERSION="~> 4.0"
+    - LIQUID_VERSION="~> 3.0"
 matrix:
   fast_finish: true
   allow_failures:
@@ -17,3 +21,7 @@ matrix:
 branches:
   only:
     - master
+notifications:
+  email:
+    on_success: change
+    on_failure: change

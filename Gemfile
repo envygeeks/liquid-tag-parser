@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 gemspec
 
-gem "rake"
 gem "pry"
+gem "rake"
+gem "liquid", ENV["LIQUID_VERSION"] \
+  if ENV["LIQUID_VERSION"]

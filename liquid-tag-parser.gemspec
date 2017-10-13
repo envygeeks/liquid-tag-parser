@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency("rspec", ">= 3", "< 4")
   spec.add_development_dependency("luna-rspec-formatters", "~> 3.7")
-  spec.add_runtime_dependency("liquid", "~> 4.0")
+  spec.add_runtime_dependency("liquid", ">= 3.0")
   spec.add_runtime_dependency("extras", "~> 0.3")
 end
