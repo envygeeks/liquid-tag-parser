@@ -12,17 +12,21 @@ module Liquid
       attr_reader :args, :raw_args
       extend Forwardable::Extended
 
-      rb_delegate :each,        to: :@args
-      rb_delegate :to_enum,     to: :@args
-      rb_delegate :key?,        to: :@args
-      rb_delegate :to_h,        to: :@args
-      rb_delegate :map,         to: :@args
-      rb_delegate :[]=,         to: :@args
-      rb_delegate :[],          to: :@args
-      rb_delegate :merge,       to: :@args
-      rb_delegate :merge!,      to: :@args
-      rb_delegate :deep_merge,  to: :@args
-      rb_delegate :deep_merge!, to: :@args
+      rb_delegate :each,              to: :@args
+      rb_delegate :key?,              to: :@args
+      rb_delegate :to_h,              to: :@args
+      rb_delegate :each_key,          to: :@args
+      rb_delegate :each_with_object,  to: :@args
+      rb_delegate :each_value,        to: :@args
+      rb_delegate :values_at,         to: :@args
+      rb_delegate :to_enum,           to: :@args
+      rb_delegate :map,               to: :@args
+      rb_delegate :[]=,               to: :@args
+      rb_delegate :[],                to: :@args
+      rb_delegate :merge,             to: :@args
+      rb_delegate :merge!,            to: :@args
+      rb_delegate :deep_merge,        to: :@args
+      rb_delegate :deep_merge!,       to: :@args
       rb_delegate :args_with_indifferent_access, to: :@args, \
         alias_of: :with_indifferent_access
 
