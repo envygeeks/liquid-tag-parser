@@ -2,7 +2,8 @@ source "https://rubygems.org"
 gemspec
 
 group :development do
-  gem  "pry", require: false
+  gem "pry", require: false
+  gem "rubocop", require: false
   gem "rake", require: false
 end
 

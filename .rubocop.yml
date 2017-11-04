@@ -1,0 +1,45 @@
+Metrics/MethodLength: { Max: 24 }
+Metrics/ModuleLength: { Max: 240 }
+Bundler/OrderedGems: { Enabled: false }
+Style/IfUnlessModifier: { Enabled: false }
+Lint/UselessAccessModifier: { Enabled: false }
+Lint/RescueWithoutErrorClass: { Enabled: false }
+Style/RegexpLiteral: { EnforcedStyle: percent_r }
+Style/BracesAroundHashParameters: { Enabled: false }
+Layout/MultilineMethodCallBraceLayout: { Enabled: false }
+Layout/AlignParameters: { EnforcedStyle: with_fixed_indentation }
+Style/TrailingCommaInLiteral: { EnforcedStyleForMultiline: comma }
+Layout/MultilineMethodCallIndentation: { EnforcedStyle: indented }
+Layout/FirstParameterIndentation: { EnforcedStyle: consistent }
+Layout/EmptyLinesAroundAccessModifier: { Enabled: false }
+Style/StringLiterals: { EnforcedStyle: double_quotes }
+Style/MultilineTernaryOperator: { Enabled: false }
+Layout/IndentArray: { EnforcedStyle: consistent }
+Layout/IndentHash: { EnforcedStyle: consistent }
+Gemspec/OrderedDependencies: { Enabled: false }
+Style/ParallelAssignment: { Enabled: false }
+Style/SelfAssignment: { Enabled: false }
+Style/Documentation: { Enabled: false }
+Style/GuardClause: { Enabled: false }
+Metrics/ClassLength: { Max: 120 }
+Metrics/AbcSize: { Max: 24 }
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%q': '{}'
+    '%Q': '{}'
+    '%r': '!!'
+    '%s': '()'
+    '%w': '()'
+    '%W': '()'
+    '%x': '()'
+    '%i': '()'
+    '%I': '()'
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - examples/**/*
+    - node_modules/**/*
+    - vendor/**/*
+Metrics/BlockLength:
+  Exclude:
+  - 'spec/**/*_spec.rb'
