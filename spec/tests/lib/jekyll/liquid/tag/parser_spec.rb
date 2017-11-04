@@ -9,10 +9,34 @@ describe Liquid::Tag::Parser do
     described_class
   end
 
-  describe "#to_html" do
-    context "w/ hash: true" do
+  #
+
+  context "w/ url argv1" do
+    context "w/ //" do
       it "works" do
-        expect(subject.new("a @b").to_html(hash: true)).to eq({
+        expect(subject.new("//hello.world").args).to eq({
+          argv1: "//hello.world",
+        })
+      end
+    end
+
+    #
+
+    context "w/ https?://" do
+      it "works" do
+        expect(subject.new("'https://hello.world'").args).to eq({
+          argv1: "https://hello.world",
+        })
+      end
+    end
+  end
+
+  #
+
+  describe "#to_h" do
+    context "w/ html: true" do
+      it "works" do
+        expect(subject.new("a @b").to_h(html: true)).to eq({
           b: true,
         })
       end

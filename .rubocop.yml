@@ -1,4 +1,5 @@
 Metrics/MethodLength: { Max: 24 }
+Metrics/ClassLength: { Max: 240 }
 Metrics/ModuleLength: { Max: 240 }
 Bundler/OrderedGems: { Enabled: false }
 Style/IfUnlessModifier: { Enabled: false }
@@ -21,8 +22,8 @@ Style/ParallelAssignment: { Enabled: false }
 Style/SelfAssignment: { Enabled: false }
 Style/Documentation: { Enabled: false }
 Style/GuardClause: { Enabled: false }
-Metrics/ClassLength: { Max: 120 }
 Metrics/AbcSize: { Max: 24 }
+Style/Semicolon: { AllowAsExpressionSeparator: true }
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%q': '{}'

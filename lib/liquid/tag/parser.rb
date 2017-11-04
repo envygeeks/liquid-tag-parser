@@ -12,6 +12,7 @@ module Liquid
       attr_reader :args, :raw_args
       extend Forwardable::Extended
 
+      # --
       rb_delegate :each,              to: :@args
       rb_delegate :key?,              to: :@args
       rb_delegate :to_h,              to: :@args
@@ -27,122 +28,200 @@ module Liquid
       rb_delegate :merge!,            to: :@args
       rb_delegate :deep_merge,        to: :@args
       rb_delegate :deep_merge!,       to: :@args
-      rb_delegate :args_with_indifferent_access, to: :@args, \
-        alias_of: :with_indifferent_access
+      rb_delegate :args_with_indifferent_access, {
+        to: :@args, alias_of: :with_indifferent_access
+      }
 
-      FLOAT = /^\d+\.\d+$/
-      BOOLEAN = /^(?<!\\)(\!|@)/
-      NEGATIVE_BOOLEAN = /^(?<!\\)\!/
-      BOOLEAN_QUOTE_REPLACEMENT = "\\1\\\\\\2"
-      SHELLSPLIT = /\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m
-      BOOLEAN_QUOTE = /('|")((?<!\\)@|(?<!\\)\!)/
-      POSITIVE_BOOLEAN = /^(?<!\\)\@/
-      ESCAPED_BOOLEAN = /\\(@|\!)/
-      KEY = /\b(?<!\\):/
-      INT = /^\d+$/
+      # --
+      FALSE = "!"
+      FLOAT = %r!\A\d+\.\d+\Z!
+      QUOTE = %r!("|')([^\1]*)(\1)!
+      SPECIAL = %r!(?<\!\\)(@|\!|:|=)!
+      BOOL = %r!\A(?<\!\\)(\!|@)([\w:]+)\Z!
+      UNQUOTED_SPECIAL = %r!(?<\!\\)(://)!
+      SPECIAL_ESCAPED = %r!\\(@|\!|:|=)!
+      KEY = %r!\b(?<\!\\):!
+      INT = %r!^\d+$!
+      TRUE = "@"
 
+      # This is taken from Ruby 2.4 standard library.
+      SHELLSPLIT = %r!\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|
+        \\.)*)"|(\\.?)|(\S))(\s|\z)?!mx
+
+      # --
       def initialize(raw, defaults: {}, sep: "=")
         @sep = sep
+        @unescaped_sep = sep
         @rsep = Regexp.escape(sep)
-        @escaped_sep_regexp = /\\#{@rsep}/
-        @sep_regexp = /\b(?<!\\)#{@rsep}/
+        @escaped_sep_regexp = %r!\\(#{@rsep})!
+        @sep_regexp = %r!\b(?<\!\\)(#{@rsep})!
         @escaped_sep = "\\#{@sep}"
-        @defaults = defaults
-        @args = {}
+        @args = defaults
         @raw = raw
 
         parse
       end
 
-      def to_html(skip: [], hash: false)
-        out = @args.each_with_object(hash ? {} : []) do |(k, v), o|
-          next if k == :argv1
-          next if v.is_a?(Array)
-          next if skip.include?(k)
-          next if v.is_a?(Hash)
-          next if v == false
+      # --
+      # Consumes a block and wraps around reusably on arguments.
+      # @return [Hash<Symbol,Object>,Array<String>]
+      # --
+      def skippable_loop(skip: [], hash: false)
+        @args.each_with_object(hash ? {} : []) do |(k, v), o|
+          skip_in_html?(k: k, v: v, skips: skip) ? next : yield([k, v], o)
+        end
+      end
 
-          o[k] = v if hash
-          unless hash
-            o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
+      # --
+      # @param [Array<Symbol>] skip keys to skip.
+      # Converts the arguments into an HTML attribute string.
+      # @return [String]
+      # --
+      def to_html(skip: [])
+        skippable_loop(skip: skip, hash: false) do |(k, v), o|
+          o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
+        end.join(" ")
+      end
+
+      # --
+      # @param [Array<Symbol>] skip keys to skip.
+      # @param [true,false] for_html skip non-html values.
+      # Converts arguments into an HTML hash (or to arguments).
+      # @return [Hash]
+      # --
+      def to_h(skip: [], html: false)
+        return @args unless html
+        skippable_loop(skip: skip, hash: true) do |(k, v), o|
+          o[k] = v
+        end
+      end
+
+      # --
+      # @param [String] k the key
+      # @param [Object] v the value
+      # @param [Array<Symbol>] skips personal skips.
+      # Determines if we should skip in HTML.
+      # @return [true,false]
+      # --
+      private
+      def skip_in_html?(k:, v:, skips: [])
+        k == :argv1 || v.is_a?(Array) || skips.include?(k) \
+          || v.is_a?(Hash) || v == false
+      end
+
+      # --
+      # @return [true,nil] a truthy value.
+      # @param [Integer] i the current iteration.
+      # @param [String] keys the keys that will be split.
+      # @param [String] val the value.
+      # --
+      private
+      def argv1(i:, k:, v:)
+        if i.zero? && k.empty? && v !~ BOOL && v !~ @sep_regexp
+          @args[:argv1] = convert(v)
+        end
+      end
+
+      # --
+      # @return [Array<String,true|false>]
+      # Allows you to flip a value based on condition.
+      # @param [String] v the value.
+      # --
+      private
+      def flip_kv_bool(v)
+        [
+          v.gsub(BOOL, "\\2"),
+          v.start_with?(TRUE) ? true : false,
+        ]
+      end
+
+      # --
+      # @param [Array<Symbol>] keys the keys.
+      # Builds a sub-hash or returns parent hash.
+      # @return [Hash]
+      # --
+      private
+      def build_hash(keys)
+        out = @args
+
+        if keys.size > 1
+          out = @args[keys[0]] ||= {}
+          keys[1...-1].each do |sk|
+            out = out[sk] ||= {}
           end
         end
 
-        hash ? out : out.join(" ")
+        out
       end
 
-      private
-      def argv1(args)
-        val = args[0]
-        hash = {}
-
-        # !"@true" && !"key1:key2=val" but "argv1 @true key1:key2=val"
-        if val !~ BOOLEAN && val !~ KEY && val !~ @sep_regexp
-          hash = {
-            argv1: args.delete_at(0)
-          }
-        end
-
-        return args, hash
-      end
-
+      # --
       private
       def parse
-        args, hash = argv1(from_shellwords)
-        @args = @defaults.deep_merge(args.each_with_object(hash) do |k, h, out = h|
+        from_shellwords.each_with_index do |k, i|
           keys, _, val = k.rpartition(@sep_regexp)
+          val.gsub!(@escaped_sep_regexp, @unescaped_sep)
+          val.gsub!(SPECIAL_ESCAPED, "\\1")
 
-          val  = val.gsub(@escaped_sep_regexp, @sep) # Unescape \\=
-          keys = val.gsub(BOOLEAN, "") if keys.empty? && val =~ BOOLEAN # @true
-          keys,  val = val, nil if keys.empty? # key val
+          next if argv1(i: i, k: keys, v: val)
+          keys, val = flip_kv_bool(val) if val =~ BOOL && keys.empty?
+          keys, val = val, nil if keys.empty?
           keys = keys.split(KEY).map(&:to_sym)
 
-          if keys.size > 1
-            h = h[keys[0]] ||= {}
-            keys[1...-1].each do |sk|
-              h = h[sk] ||= {}
-            end
-          end
-
-          val = val.to_i if val =~ INT # key=1
-          val = val.to_f if val =~ FLOAT # key=0.1
-          val = false    if val == "false" # key=false
-          val = false    if val =~ NEGATIVE_BOOLEAN # !false
-          val = true     if val =~ POSITIVE_BOOLEAN # @true
-          val = true     if val == "true" # key=true
-
-          if val.is_a?(String)
-            then val = val.gsub(ESCAPED_BOOLEAN, "\\1")
-          end
-
-          key = keys.last.to_sym
-          h[key] << val if h[key].is_a?(Array)
-          h[key] = [h[key]].flatten << val if h[key] && !h[key].is_a?(Array)
-          h[key] = val unless h[key]
-
-          out
-        end)
+          set_val({
+            v: convert(val),
+            hash: build_hash(keys),
+            k: keys.last,
+          })
+        end
       end
 
+      # --
+      private
+      def set_val(k:, v:, hash:)
+        hash[k] << v if hash[k].is_a?(Array)
+        hash[k] = [hash[k]].flatten << v if hash[k] && !hash[k].is_a?(Array)
+        hash[k] = v unless hash[k]
+      end
+
+      # --
+      # @return [true,false,Float,Integer]
+      # Convert a value to a native value.
+      # --
+      private
+      def convert(val)
+        return val.to_f if val =~ FLOAT
+        return val.to_i if val =~ INT
+        val
+      end
+
+      # --
+      # Wraps into `#shellsplit`, and first substitutes some values.
+      # @return [Array<String>]
+      # --
       private
       def from_shellwords
-        shellsplit(@raw.gsub(/('|")([^\1]+)\1/) do |v|
-          v.gsub(BOOLEAN_QUOTE, BOOLEAN_QUOTE_REPLACEMENT).gsub(@sep_regexp, @escaped_sep)
-        end)
+        shellsplit(
+          @raw.gsub(SPECIAL, "\\\\\\1")
+              .gsub(UNQUOTED_SPECIAL, "\\\\\\1")
+              .gsub(@sep_regexp, @escaped_sep))
       end
 
-      # Because Shellwords.shellwords on < 2.4 has problems
-      # with quotes and \\, we ported this back, this pretty
-      # much the same thing except we replace some of the
-      # questionable code like `String.new`
+      # --
+      # @see Shellwords.shellsplit
+      # Because Shellwords.shellwords on < 2.4 has problems with
+      #   quotes and \\, we ported this back, this pretty much the
+      #   same thing except we replace some of the questionable
+      #   code like `String.new`
+      # --
       private
       def shellsplit(line)
         out, field = [], ""
 
+        # rubocop:disable Metrics/ParameterLists
         line.scan(SHELLSPLIT) do |w, s, d, e, g, se|
           raise ArgumentError, "Unmatched double quote: #{line.inspect}" if g
-            field = field + (w || s || (d && d.gsub(/\\([$`"\\\n])/, '\\1')) \
-            || e.gsub(/\\(.)/, '\\1'))
+          field = field + (w || s || (d&.gsub(%r!\\([$`"\\\n])!,
+            '\\1')) || e.gsub(%r!\\(.)!, '\\1'))
 
           if se
             out << field
