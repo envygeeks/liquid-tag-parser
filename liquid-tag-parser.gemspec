@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.description = "Parse liquid tags easily"
   spec.homepage = "http://github.com/envygeeks/liquid-tag-parser"
   spec.summary = "Parse liquid tags like a professional"
-  spec.files = %W(Gemfile) + Dir["lib/**/*"]
+  spec.files = %w(Gemfile) + Dir["lib/**/*"]
   spec.required_ruby_version = ">= 2.1.0"
   spec.email = ["jordon@envygeeks.io"]
   spec.name = "liquid-tag-parser"

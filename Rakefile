@@ -10,3 +10,7 @@ require "rubocop/rake_task"
 RuboCop::RakeTask.new(:rubocop)
 RSpec::Core::RakeTask.new(:spec)
 task default: %i(spec rubocop)
+
+Rake::Task[:spec].enhance do
+  Rake::Task[:rubocop].invoke
+end
