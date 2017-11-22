@@ -83,6 +83,14 @@ describe Liquid::Tag::Parser do
         a: "b=c",
       }))
     end
+
+    context "argv1" do
+      it "doesn't parse" do
+        expect(subject.new("'a=b'").args).to eq({
+          argv1: "a=b",
+        })
+      end
+    end
   end
 
   #

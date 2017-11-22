@@ -118,7 +118,7 @@ module Liquid
       private
       def argv1(i:, k:, v:)
         if i.zero? && k.empty? && v !~ BOOL && v !~ @sep_regexp
-          @args[:argv1] = convert(v)
+          @args[:argv1] = unescape(convert(v))
         end
       end
 
@@ -154,15 +154,21 @@ module Liquid
         out
       end
 
+      private
+      def unescape(val)
+        return unless val
+        val.gsub(@escaped_sep_regexp, @unescaped_sep).gsub(
+          SPECIAL_ESCAPED, "\\1")
+      end
+
       # --
       private
       def parse
         from_shellwords.each_with_index do |k, i|
           keys, _, val = k.rpartition(@sep_regexp)
-          val.gsub!(@escaped_sep_regexp, @unescaped_sep)
-          val.gsub!(SPECIAL_ESCAPED, "\\1")
-
           next if argv1(i: i, k: keys, v: val)
+
+          val = unescape(val)
           keys, val = flip_kv_bool(val) if val =~ BOOL && keys.empty?
           keys, val = val, nil if keys.empty?
           keys = keys.split(KEY).map(&:to_sym)
