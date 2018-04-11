@@ -1,12 +1,9 @@
-<p align=center>
-  <a href=https://goo.gl/BhrgjW>
-    <img src=https://envygeeks.io/badges/paypal-large_1.png alt=Donate>
-  </a>
-  <br>
-  <a href=https://travis-ci.org/envygeeks/liquid-tag-parser>
-    <img src="https://travis-ci.org/envygeeks/liquid-tag-parser.svg?branch=master">
-  </a>
-</div>
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/envygeeks/liquid-tag-parser.svg?style=for-the-badge)](https://codeclimate.com/github/envygeeks/liquid-tag-parser/maintainability)
+[![Code Climate](https://img.shields.io/codeclimate/c/envygeeks/liquid-tag-parser.svg?style=for-the-badge)](https://codeclimate.com/github/envygeeks/liquid-tag-parser/coverage)
+[![Travis CI](https://img.shields.io/travis/envygeeks/liquid-tag-parser/master.svg?style=for-the-badge)](https://travis-ci.org/envygeeks/liquid-tag-parser)
+[![Donate](https://img.shields.io/badge/-DONATE-yellow.svg?style=for-the-badge)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LKGZAWXLZ8ZPG)
+![Gem Version](https://img.shields.io/gem/v/liquid-tag-parser.svg?style=for-the-badge)
+![Gem DL](https://img.shields.io/gem/dt/liquid-tag-parser.svg?style=for-the-badge)
 
 # Liquid Tag Parser
 
