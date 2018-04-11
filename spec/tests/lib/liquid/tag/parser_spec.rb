@@ -1,6 +1,7 @@
 # Frozen-string-literal: true
-# Copyright: 2017 Jordon Bedwell - MIT License
+# Copyright: 2017 - 2018 - MIT License
 # rubocop:disable Lint/BooleanSymbol
+# Author: Jordon Bedwell
 # Encoding: utf-8
 
 require "rspec/helper"
