@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("rake", "~> 12")
   spec.add_development_dependency("pry", "~> 0.11")
   spec.add_development_dependency("rubocop", "0.52")
+  spec.add_development_dependency("simplecov", "~> 0.16")
   spec.add_development_dependency("rspec", ">= 3", "< 4")
   spec.add_development_dependency("luna-rspec-formatters", "~> 3.7")
   spec.add_runtime_dependency("liquid", ">= 3.0", "< 5.0")
