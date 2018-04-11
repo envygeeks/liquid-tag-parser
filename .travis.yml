@@ -1,23 +1,37 @@
 language: ruby
+after_success: script/report
+before_install: ["gem install bundler"]
+before_script: script/report before
+script: script/test
 sudo: false
 cache:
   bundler: true
   directories:
     - vendor/bundle
+    - node_modules
 rvm:
+  - &ruby25 2.5
   - &ruby24 2.4
-  - &ruby23 2.3
-  - &jruby jruby-9.1.12.0
-  - &rhead ruby-head
 env:
+  global:
+    secure: "\
+      Jq9bh/zkxYLK5xiSK5uxngZMVerno/gBQtF26ERQY+U16J2bO73ky13dBMxYkndprT+zI3JE\
+      DJ2b/ge++Ui3GJbeqq51LlK6H+6n2JnJ75Q2siWrI7bMf2xHu5XinANvDnqenE4fRjaIyHVO\
+      WJ/8b1A9LNOMNiuiiHj2Pi8NtV70f5pjtPDcea073PB6CE4hn6pRN3+GqIuDI6xtL4rLc27o\
+      BA68ogkvtXb549LvXznCDoLq0SoNOP7F7oR92McKUyjw8Z3yLk09xHNLSkq4E1Dp4S/brRsl\
+      35U8lJh/WF/3FG0euhuOU+olrnQnNpjNxVS1UBveNIRAaHJaco+52aAe+iINu0HQHS0VEnbq\
+      gAZWnbAtOPfk5dqw5q+PBp/voNlIrmdK0NpRVHEd/joqxfwuBeVxHfuFDUraCb60JL01//Vu\
+      pMexCx4Txp0L3WiISHbZ48Q+LpoUOIE9xGLQArOb/LhDw2FdvV5UGIMgGNli9J0VLs+KZFCR\
+      7MjlJ4S3QrowhkWpLkOHtxDOvsnG0rIFWHyPnav/mArK+hkYAB5SuyV0muF2/vFhYOo0AXNb\
+      o3YTuihBQsRO3Aacl8WPHGALYkJmOA1EOYQYfJF2XayPb9oWpZfBAZCbK664OpPqtHFqh8a+\
+      6+URk5hZIA8F5iNlKg49ETQWJCNQ9DFvMqI=\
+    "
   matrix:
     - LIQUID_VERSION="~> 4.0"
     - LIQUID_VERSION="~> 3.0"
+    - LINTING=true
 matrix:
   fast_finish: true
-  allow_failures:
-    - rvm: *jruby
-    - rvm: *rhead
 branches:
   only:
     - master
