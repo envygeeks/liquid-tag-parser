@@ -29,6 +29,7 @@ module Liquid
       rb_delegate :merge!,            to: :@args
       rb_delegate :deep_merge,        to: :@args
       rb_delegate :deep_merge!,       to: :@args
+      rb_delegate :select,            to: :@args
       rb_delegate :args_with_indifferent_access, {
         to: :@args, alias_of: :with_indifferent_access
       }
