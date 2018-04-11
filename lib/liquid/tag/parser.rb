@@ -9,8 +9,9 @@ require "liquid"
 module Liquid
   class Tag
     class Parser
-      attr_reader :args, :raw_args
+      attr_reader :args
       extend Forwardable::Extended
+      alias raw_args args
 
       # --
       rb_delegate :each,              to: :@args
