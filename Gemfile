@@ -5,12 +5,6 @@
 source "https://rubygems.org"
 gemspec
 
-group :development do
-  gem "pry", require: false
-  gem "rubocop", require: false
-  gem "rake", require: false
-end
-
 if ENV["LIQUID_VERSION"]
   gem "liquid", ENV["LIQUID_VERSION"]
 end
