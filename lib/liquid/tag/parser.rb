@@ -39,11 +39,11 @@ module Liquid
       FALSE = "!"
       FLOAT = %r!\A\d+\.\d+\Z!
       QUOTE = %r!("|')([^\1]*)(\1)!
-      SPECIAL = %r!(?<\!\\)(@|\!|:|=)!
-      BOOL = %r!\A(?<\!\\)(\!|@)([\w:]+)\Z!
-      UNQUOTED_SPECIAL = %r!(?<\!\\)(://)!
-      SPECIAL_ESCAPED = %r!\\(@|\!|:|=)!
-      KEY = %r!\b(?<\!\\):!
+      SPECIAL = %r{(?<!\\)(@|!|:|=)}
+      BOOL = %r{\A(?<!\\)(!|@)([\w:]+)\Z}
+      UNQUOTED_SPECIAL = %r{(?<!\\)(://)}
+      SPECIAL_ESCAPED = %r{\\(@|!|:|=)}
+      KEY = %r{\b(?<!\\):}
       INT = %r!^\d+$!
       TRUE = "@"
 
@@ -57,7 +57,7 @@ module Liquid
         @unescaped_sep = sep
         @rsep = Regexp.escape(sep)
         @escaped_sep_regexp = %r!\\(#{@rsep})!
-        @sep_regexp = %r!\b(?<\!\\)(#{@rsep})!
+        @sep_regexp = %r{\b(?<!\\)(#{@rsep})}
         @escaped_sep = "\\#{@sep}"
         @args = defaults
         @raw = raw
