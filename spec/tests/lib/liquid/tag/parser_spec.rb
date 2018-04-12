@@ -5,6 +5,7 @@
 # Encoding: utf-8
 
 require "rspec/helper"
+require "liquid/tag/parser"
 describe Liquid::Tag::Parser do
   subject do
     described_class
