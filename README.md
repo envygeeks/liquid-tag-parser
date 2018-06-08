@@ -19,6 +19,28 @@ gem "liquid-tag-parser", "~> 1.9"
 
 Typically you would take the raw argument data you get from Liquid and ship that to us, we will parse it, and return to you the data, as a class.  You can access hash keys with `#args` or you can access it with `#[]` on the class.
 
+```ruby
+require "liquid/tag/parser"
+class MyTag < Liquid::Tag
+  def initialize(tag, args, tokens)
+    @args = Liquid::Tag::parser.new(args)
+    @raw_args = args
+    @tag = tag.to_sym
+    @tokens = tokens
+    super
+  end
+  
+  def render(ctx)
+    return "it worked" if @args[:myArg]
+    "it didn't work"
+  end
+end
+```
+
+```liquid
+{% mytag myArg = true %}
+```
+
 ### With `argv1`
 
 ```ruby
