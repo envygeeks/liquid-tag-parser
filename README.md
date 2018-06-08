@@ -9,6 +9,12 @@
 
 Liquid Tag parser provides a robust interface to parsing your tag syntax in a way that makes sense, it uses `Shellwords`, along with escapes to allow users to do extremely robust arguments, giving you back a hash, that you get to play with.  It also has the concept of `argv1`, deep hashes, and even defaults if you give them to us.
 
+## Installation
+
+```ruby
+gem "liquid-tag-parser", "~> 1.9"
+```
+
 ## Usage
 
 Typically you would take the raw argument data you get from Liquid and ship that to us, we will parse it, and return to you the data, as a class.  You can access hash keys with `#args` or you can access it with `#[]` on the class.
