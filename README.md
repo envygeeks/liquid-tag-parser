@@ -62,7 +62,6 @@ Liquid::Tag::Parser.new("a b=1 c=2 !false d:e:f='3 4' @true").args
 #### Escaping `argv1`
 
 ```ruby
-https://www.googletagmanager.com/gtag/js?id=UA-18997298-1
 Liquid::Tag::Parser.new("'a=1'").args
 # => {
 #   argv1: "a=1"
