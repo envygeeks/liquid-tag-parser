@@ -1,6 +1,14 @@
 Style/RescueStandardError: { Enabled: false }
 Layout/SpaceInsideBlockBraces: { Enabled: false }
 Naming/FileName: { Enabled: false }
+# --
+# 🙃
+# Not really necessary.
+#   Seriously.
+# --
+Naming/MethodParameterName:
+  MinNameLength: 1
+
 Style/Documentation:
   Enabled: false
 # --
@@ -22,7 +30,7 @@ Gemspec/RequiredRubyVersion:
 # My classes, modules, and methods rarely reach this
 #   length, but sometimes they do, like Pathutil.
 # --
-Metrics/MethodLength: { Max:  24 }
+Metrics/MethodLength: { Max: 24 }
 Metrics/ModuleLength: { Max: 240 }
 Metrics/ClassLength:
   Max: 240
@@ -84,14 +92,16 @@ Layout/MultilineMethodCallBraceLayout:
 # I like my stuff to be indented 2 spaces.
 #   Not aligned at brackets.
 # --
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 # --
 # 🎨
 # Makes reorganizing hashes easier.
 #   They are non-positional.
 # --
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
 # --
 # 🎨
@@ -157,14 +167,14 @@ Style/MultilineTernaryOperator:
 # I like my arrays to be indented 2 spaces.
 #   Not aligned at the bracket.
 # --
-Layout/IndentArray:
+Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
 # --
 # 🎨
 # I like my hashes to be indented 2 spaces.
 #   Not aligned at the bracket.
 # --
-Layout/IndentHash:
+Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 # --
 # 🎨
@@ -213,15 +223,15 @@ Style/Semicolon:
 # --
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
-    '%q': '{}'
-    '%Q': '{}'
-    '%r': '!!'
-    '%s': '()'
-    '%w': '()'
-    '%W': '()'
-    '%x': '()'
-    '%i': '()'
-    '%I': '()'
+    "%q": "{}"
+    "%Q": "{}"
+    "%r": "!!"
+    "%s": "()"
+    "%w": "()"
+    "%W": "()"
+    "%x": "()"
+    "%i": "()"
+    "%I": "()"
 # --
 # Prefer %r!! over //
 # 🎨
@@ -243,5 +253,5 @@ AllCops:
     - vendor/**/*
 Metrics/BlockLength:
   Exclude:
-  - 'spec/**/*_spec.rb'
-  - 'config/**/*.rb'
+    - "spec/**/*_spec.rb"
+    - "config/**/*.rb"

@@ -20,5 +20,5 @@ plugins:
       file: .rubocop.yml
 ratings:
   paths:
-  - "spec/tests/**.rb"
-  - "lib/**.rb"
+    - "spec/tests/**.rb"
+    - "lib/**.rb"
