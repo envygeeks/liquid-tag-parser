@@ -1,8 +1,8 @@
 # Frozen-string-literal: true
-# Copyright: 2017 Jordon Bedwell - MIT License
-# Encoding: utf-8
 
-$LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
+# Copyright: 2017 Jordon Bedwell - MIT License
+
+$LOAD_PATH.unshift(File.expand_path("lib", __dir__))
 require "liquid/tag/parser/version"
 
 Gem::Specification.new do |spec|
@@ -16,12 +16,11 @@ Gem::Specification.new do |spec|
   spec.email = ["jordon@envygeeks.io"]
   spec.name = "liquid-tag-parser"
   spec.require_paths = ["lib"]
-  spec.has_rdoc = false
   spec.license = "MIT"
 
   spec.add_development_dependency("rake", "~> 12")
   spec.add_development_dependency("pry", "~> 0.11")
-  spec.add_development_dependency("rubocop", "0.52")
+  spec.add_development_dependency("rubocop", "0.79")
   spec.add_development_dependency("simplecov", "~> 0.16")
   spec.add_development_dependency("rspec", ">= 3", "< 4")
   spec.add_development_dependency("luna-rspec-formatters", "~> 3.7")

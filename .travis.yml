@@ -10,6 +10,7 @@ cache:
     - vendor/bundle
     - node_modules
 rvm:
+  - &ruby27 2.7
   - &ruby25 2.5
   - &ruby24 2.4
 env:
@@ -25,7 +26,7 @@ env:
       rbu4xEQgFu3dV8eV98cx4wuiEU9VZtoWY92crV7prOXJmHNHhFFtSW0zjMrovkZMP5FZaUZx\
       TdzWYNs4I4WNAWClktTuBJ2SY9/DgYvfC0Ap3xhBpeNlLkiJ9cWM0NrHCj2xVA9zMtqJFREN\
       wmZYOSMjnNpqBV4go1fUinwtyobZxwfw3Jc=\
-    "
+      "
   matrix:
     - LIQUID_VERSION="~> 4.0"
     - LIQUID_VERSION="~> 3.0"

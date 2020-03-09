@@ -37,19 +37,19 @@ module Liquid
 
       # --
       FALSE = "!"
-      FLOAT = %r!\A\d+\.\d+\Z!
-      QUOTE = %r!("|')([^\1]*)(\1)!
-      SPECIAL = %r{(?<!\\)(@|!|:|=)}
-      BOOL = %r{\A(?<!\\)(!|@)([\w:]+)\Z}
-      UNQUOTED_SPECIAL = %r{(?<!\\)(://)}
-      SPECIAL_ESCAPED = %r{\\(@|!|:|=)}
-      KEY = %r{\b(?<!\\):}
-      INT = %r!^\d+$!
+      FLOAT = %r!\A\d+\.\d+\Z!.freeze
+      QUOTE = %r!("|')([^\1]*)(\1)!.freeze
+      SPECIAL = %r{(?<!\\)(@|!|:|=)}.freeze
+      BOOL = %r{\A(?<!\\)(!|@)([\w:]+)\Z}.freeze
+      UNQUOTED_SPECIAL = %r{(?<!\\)(://)}.freeze
+      SPECIAL_ESCAPED = %r{\\(@|!|:|=)}.freeze
+      KEY = %r{\b(?<!\\):}.freeze
+      INT = %r!^\d+$!.freeze
       TRUE = "@"
 
       # This is taken from Ruby 2.4 standard library.
       SHELLSPLIT = %r!\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|
-        \\.)*)"|(\\.?)|(\S))(\s|\z)?!mx
+        \\.)*)"|(\\.?)|(\S))(\s|\z)?!mx.freeze
 
       # --
       def initialize(raw, defaults: {}, sep: "=")
@@ -94,6 +94,7 @@ module Liquid
       # --
       def to_h(skip: [], html: false)
         return @args unless html
+
         skippable_loop(skip: skip, hash: true) do |(k, v), o|
           o[k] = v
         end
@@ -160,6 +161,7 @@ module Liquid
       private
       def unescape(val)
         return unless val
+
         val.gsub(@escaped_sep_regexp, @unescaped_sep).gsub(
           SPECIAL_ESCAPED, "\\1")
       end
@@ -200,6 +202,7 @@ module Liquid
       def convert(val)
         return val.to_f if val =~ FLOAT
         return val.to_i if val =~ INT
+
         val
       end
 
@@ -229,8 +232,9 @@ module Liquid
         # rubocop:disable Metrics/ParameterLists
         line.scan(SHELLSPLIT) do |w, s, d, e, g, se|
           raise ArgumentError, "Unmatched double quote: #{line.inspect}" if g
-          field = field + (w || s || (d&.gsub(%r!\\([$`"\\\n])!,
-            '\\1')) || e.gsub(%r!\\(.)!, '\\1'))
+
+          field = field + (w || s || d&.gsub(%r!\\([$`"\\\n])!,
+                                             '\\1') || e.gsub(%r!\\(.)!, '\\1'))
 
           if se
             out << field

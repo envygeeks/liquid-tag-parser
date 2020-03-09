@@ -11,7 +11,7 @@ describe Liquid::Tag::Parser do
     described_class
   end
 
-  #
+  #################
 
   context "w/ url argv1" do
     context "w/ //" do
@@ -22,7 +22,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     context "w/ https?://" do
       it "works" do
@@ -33,7 +33,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   describe "#to_h" do
     context "w/ html: true" do
@@ -44,7 +44,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     context "w/ !bool" do
       it "excludes" do
@@ -52,7 +52,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     context "w/ hash" do
       it "doesn't include" do
@@ -60,7 +60,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     context "args" do
       it "converts" do
@@ -68,7 +68,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     context "w/ argv1" do
       it "excludes" do
@@ -77,7 +77,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "w/ '='" do
     it "doesn't parse" do
@@ -95,7 +95,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "w/ array" do
     it "parses" do
@@ -105,7 +105,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "w/ boolean" do
     context "w/ quotes" do
@@ -116,7 +116,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     it "works" do
       expect(subject.new("@true").args).to(eq({
@@ -124,7 +124,7 @@ describe Liquid::Tag::Parser do
       }))
     end
 
-    #
+    #################
 
     it "strips @" do
       expect(subject.new("@true").args.keys).to(eq([
@@ -132,7 +132,7 @@ describe Liquid::Tag::Parser do
       ]))
     end
 
-    #
+    #################
 
     context "w/ sub" do
       it "works" do
@@ -145,7 +145,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "reverse boolean" do
     it "works" do
@@ -154,7 +154,7 @@ describe Liquid::Tag::Parser do
       }))
     end
 
-    #
+    #################
 
     it "strips !" do
       expect(subject.new("!false").args.keys).to(eq([
@@ -162,7 +162,7 @@ describe Liquid::Tag::Parser do
       ]))
     end
 
-    #
+    #################
 
     context "w/ sub" do
       it "works" do
@@ -175,7 +175,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "w/ deep hash" do
     it "works" do
@@ -187,7 +187,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "w/ custom separator" do
     it "works" do
@@ -199,7 +199,7 @@ describe Liquid::Tag::Parser do
     end
   end
 
-  #
+  #################
 
   context "with argv1" do
     it "works" do
@@ -210,7 +210,7 @@ describe Liquid::Tag::Parser do
       }))
     end
 
-    #
+    #################
 
     context "w/ k=v" do
       it "skips" do
@@ -222,7 +222,7 @@ describe Liquid::Tag::Parser do
       end
     end
 
-    #
+    #################
 
     context "w/ bool" do
       it "skips" do
