@@ -39,7 +39,7 @@ module Liquid
       # --
       FALSE = "!"
       FLOAT = %r!\A\d+\.\d+\Z!.freeze
-      QUOTE = %r!("|')([^\1]*)(\1)!.freeze
+      QUOTE = %r!(["'])([^\1]*)(\1)!.freeze
       SPECIAL = %r{(?<!\\)(@|!|:|=)}.freeze
       BOOL = %r{\A(?<!\\)(!|@)([\w:]+)\Z}.freeze
       UNQUOTED_SPECIAL = %r{(?<!\\)(://)}.freeze
