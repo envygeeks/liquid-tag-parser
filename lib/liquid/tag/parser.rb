@@ -48,11 +48,6 @@ module Liquid
       INT = %r!^\d+$!.freeze
       TRUE = "@"
 
-      # This is taken from Ruby 2.4 standard library.
-      SHELLSPLIT = %r!\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|
-        \\.)*)"|(\\.?)|(\S))(\s|\z)?!mx.freeze
-
-      # --
       def initialize(raw, defaults: {}, sep: "=")
         @sep = sep
         @unescaped_sep = sep
@@ -213,37 +208,10 @@ module Liquid
       # --
       private
       def from_shellwords
-        shellsplit(
+        Shellwords.shellsplit(
           @raw.gsub(SPECIAL, "\\\\\\1")
               .gsub(UNQUOTED_SPECIAL, "\\\\\\1")
               .gsub(@sep_regexp, @escaped_sep))
-      end
-
-      # --
-      # @see Shellwords.shellsplit
-      # Because Shellwords.shellwords on < 2.4 has problems with
-      #   quotes and \\, we ported this back, this pretty much the
-      #   same thing except we replace some of the questionable
-      #   code like `String.new`
-      # --
-      private
-      def shellsplit(line)
-        out, field = [], ""
-
-        # rubocop:disable Metrics/ParameterLists
-        line.scan(SHELLSPLIT) do |w, s, d, e, g, se|
-          raise ArgumentError, "Unmatched double quote: #{line.inspect}" if g
-
-          field = field + (w || s || d&.gsub(%r!\\([$`"\\\n])!,
-                                             '\\1') || e.gsub(%r!\\(.)!, '\\1'))
-
-          if se
-            out << field
-            field = ""
-          end
-        end
-
-        out
       end
     end
   end
