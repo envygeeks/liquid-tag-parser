@@ -41,7 +41,7 @@ module Liquid
       FLOAT = %r!\A\d+\.\d+\Z!.freeze
       QUOTE = %r!(["'])([^\1]*)(\1)!.freeze
       SPECIAL = %r{(?<!\\)(@|!|:|=)}.freeze
-      BOOL = %r{\A(?<!\\)(!|@)([\w:]+)\Z}.freeze
+      BOOL = %r{\A(?<!\\)([!@])([\w:]+)\z}.freeze
       UNQUOTED_SPECIAL = %r{(?<!\\)(://)}.freeze
       SPECIAL_ESCAPED = %r{\\(@|!|:|=)}.freeze
       KEY = %r{\b(?<!\\):}.freeze
