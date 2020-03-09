@@ -4,36 +4,37 @@
 # Encoding: utf-8
 
 require "extras/hash"
-require "forwardable/extended"
 require "liquid"
 
 module Liquid
   class Tag
     class Parser
       attr_reader :args
-      extend Forwardable::Extended
       alias raw_args args
+      extend Forwardable
 
-      # --
-      rb_delegate :each,              to: :@args
-      rb_delegate :key?,              to: :@args
-      rb_delegate :to_h,              to: :@args
-      rb_delegate :each_key,          to: :@args
-      rb_delegate :each_with_object,  to: :@args
-      rb_delegate :each_value,        to: :@args
-      rb_delegate :values_at,         to: :@args
-      rb_delegate :to_enum,           to: :@args
-      rb_delegate :map,               to: :@args
-      rb_delegate :[]=,               to: :@args
-      rb_delegate :[],                to: :@args
-      rb_delegate :merge,             to: :@args
-      rb_delegate :merge!,            to: :@args
-      rb_delegate :deep_merge,        to: :@args
-      rb_delegate :deep_merge!,       to: :@args
-      rb_delegate :select,            to: :@args
-      rb_delegate :args_with_indifferent_access, {
-        to: :@args, alias_of: :with_indifferent_access
-      }
+      def_delegator :@args, :each
+      def_delegator :@args, :key?
+      def_delegator :@args, :to_h
+      def_delegator :@args, :each_key
+      def_delegator :@args, :each_with_object
+      def_delegator :@args, :each_value
+      def_delegator :@args, :values_at
+      def_delegator :@args, :to_enum
+      def_delegator :@args, :map
+      def_delegator :@args, :[]=
+      def_delegator :@args, :[]
+      def_delegator :@args, :merge
+      def_delegator :@args, :merge!
+      def_delegator :@args, :deep_merge
+      def_delegator :@args, :deep_merge!
+      def_delegator :@args, :select
+
+      def args_with_indifferent_access
+        @args.send(
+          :with_indifferent_access
+        )
+      end
 
       # --
       FALSE = "!"
