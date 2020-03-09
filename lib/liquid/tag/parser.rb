@@ -61,33 +61,33 @@ module Liquid
         parse
       end
 
-      # --
+      #
       # Consumes a block and wraps around reusably on arguments.
       # @return [Hash<Symbol,Object>,Array<String>]
-      # --
+      #
       def skippable_loop(skip: [], hash: false)
         @args.each_with_object(hash ? {} : []) do |(k, v), o|
           skip_in_html?(k: k, v: v, skips: skip) ? next : yield([k, v], o)
         end
       end
 
-      # --
+      #
       # @param [Array<Symbol>] skip keys to skip.
       # Converts the arguments into an HTML attribute string.
       # @return [String]
-      # --
+      #
       def to_html(skip: [])
         skippable_loop(skip: skip, hash: false) do |(k, v), o|
           o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
         end.join(" ")
       end
 
-      # --
+      #
       # @param [Array<Symbol>] skip keys to skip.
-      # @param [true,false] for_html skip non-html values.
+      # @param [true,false] html skip non-html values.
       # Converts arguments into an HTML hash (or to arguments).
-      # @return [Hash]
-      # --
+      # @return [Hash<Object>,Array<String>]
+      #
       def to_h(skip: [], html: false)
         return @args unless html
 
@@ -96,25 +96,25 @@ module Liquid
         end
       end
 
-      # --
+      #
       # @param [String] k the key
       # @param [Object] v the value
       # @param [Array<Symbol>] skips personal skips.
       # Determines if we should skip in HTML.
       # @return [true,false]
-      # --
+      #
       private
       def skip_in_html?(k:, v:, skips: [])
         k == :argv1 || v.is_a?(Array) || skips.include?(k) \
           || v.is_a?(Hash) || v == false
       end
 
-      # --
+      #
       # @return [true,nil] a truthy value.
-      # @param [Integer] i the current iteration.
+      # @param [Integer] idx the current iteration.
       # @param [String] keys the keys that will be split.
       # @param [String] val the value.
-      # --
+      #
       private
       def argv1(i:, k:, v:)
         if i.zero? && k.empty? && v !~ BOOL && v !~ @sep_regexp
@@ -122,11 +122,11 @@ module Liquid
         end
       end
 
-      # --
+      #
       # @return [Array<String,true|false>]
       # Allows you to flip a value based on condition.
       # @param [String] v the value.
-      # --
+      #
       private
       def flip_kv_bool(v)
         [
@@ -135,11 +135,11 @@ module Liquid
         ]
       end
 
-      # --
+      #
       # @param [Array<Symbol>] keys the keys.
       # Builds a sub-hash or returns parent hash.
       # @return [Hash]
-      # --
+      #
       private
       def build_hash(keys)
         out = @args
@@ -162,7 +162,6 @@ module Liquid
           SPECIAL_ESCAPED, "\\1")
       end
 
-      # --
       private
       def parse
         from_shellwords.each_with_index do |k, i|
