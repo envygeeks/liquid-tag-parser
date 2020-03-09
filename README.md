@@ -1,9 +1,4 @@
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/envygeeks/liquid-tag-parser.svg?style=for-the-badge)](https://codeclimate.com/github/envygeeks/liquid-tag-parser/maintainability)
-[![Code Climate](https://img.shields.io/codeclimate/c/envygeeks/liquid-tag-parser.svg?style=for-the-badge)](https://codeclimate.com/github/envygeeks/liquid-tag-parser/coverage)
-[![Travis CI](https://img.shields.io/travis/envygeeks/liquid-tag-parser/master.svg?style=for-the-badge)](https://travis-ci.org/envygeeks/liquid-tag-parser)
-[![Donate](https://img.shields.io/badge/-DONATE-yellow.svg?style=for-the-badge)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LKGZAWXLZ8ZPG)
-![Gem Version](https://img.shields.io/gem/v/liquid-tag-parser.svg?style=for-the-badge)
-![Gem DL](https://img.shields.io/gem/dt/liquid-tag-parser.svg?style=for-the-badge)
+[![Build Status](https://travis-ci.com/envygeeks/liquid-tag-parser.svg?branch=master)](https://travis-ci.com/envygeeks/liquid-tag-parser)
 
 # Liquid Tag Parser
 
@@ -29,8 +24,8 @@ class MyTag < Liquid::Tag
     @tokens = tokens
     super
   end
-  
-  def render(ctx)
+
+  def render(_ctx_)
     return "it worked" if @args[:myArg]
     "it didn't work"
   end

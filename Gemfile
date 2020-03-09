@@ -5,6 +5,6 @@
 source "https://rubygems.org"
 gemspec
 
-if ENV["LIQUID_VERSION"]
+if ENV.key?('LIQUID_VERSION')
   gem "liquid", ENV["LIQUID_VERSION"]
 end
