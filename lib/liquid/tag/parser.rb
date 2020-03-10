@@ -43,7 +43,7 @@ module Liquid
       SPECIAL = %r{(?<!\\)([@!:=])}.freeze
       BOOL = %r{\A(?<!\\)([!@])([\w:]+)\z}.freeze
       UNQUOTED_SPECIAL = %r{(?<!\\)(://)}.freeze
-      SPECIAL_ESCAPED = %r{\\(@|!|:|=)}.freeze
+      SPECIAL_ESCAPED = %r{\\([@!:=])}.freeze
       KEY = %r{\b(?<!\\):}.freeze
       INT = %r!^\d+$!.freeze
       TRUE = '@'
