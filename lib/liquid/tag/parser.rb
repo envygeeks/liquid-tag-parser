@@ -116,9 +116,13 @@ module Liquid
       # @param [String] val the value.
       #
       private
-      def argv1(i:, k:, v:)
-        if i.zero? && k.empty? && v !~ BOOL && v !~ @sep_regexp
-          @args[:argv1] = unescape(convert(v))
+      def argv1(idx:, keys:, val:)
+        if idx.zero? && keys.empty? && val !~ BOOL && val !~ @sep_regexp
+          @args[:argv1] = unescape(
+            convert(
+              val
+            )
+          )
         end
       end
 
@@ -166,7 +170,7 @@ module Liquid
       def parse
         from_shellwords.each_with_index do |k, i|
           keys, _, val = k.rpartition(@sep_regexp)
-          next if argv1(i: i, k: keys, v: val)
+          next if argv1(idx: i, keys: keys, val: val)
 
           val = unescape(val)
           keys, val = flip_kv_bool(val) if val =~ BOOL && keys.empty?
