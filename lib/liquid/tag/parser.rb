@@ -28,13 +28,10 @@ module Liquid
       def_delegator :@args, :merge!
       def_delegator :@args, :deep_merge
       def_delegator :@args, :deep_merge!
+      def_delegator :@args, :update
       def_delegator :@args, :select
-
-      def args_with_indifferent_access
-        @args.send(
-          :with_indifferent_access
-        )
-      end
+      def_delegator :@args, :find
+      def_delegator :@args, :dig
 
       # --
       FALSE = '!'
@@ -66,8 +63,15 @@ module Liquid
       # @return [Hash<Symbol,Object>,Array<String>]
       #
       def skippable_loop(skip: [], hash: false)
-        @args.each_with_object(hash ? {} : []) do |(k, v), o|
-          skip_in_html?(k: k, v: v, skips: skip) ? next : yield([k, v], o)
+        @args.each_with_object(hash ? {} : []) do |(key, val), obj|
+          next obj if skip_in_html?(key: key, val: val, skips: skip)
+          yield(
+            [
+              key,
+              val
+            ],
+            obj
+          )
         end
       end
 
@@ -80,6 +84,17 @@ module Liquid
         skippable_loop(skip: skip, hash: false) do |(k, v), o|
           o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
         end.join(' ')
+      end
+
+      #
+      # indifferent args as a hash
+      # @note this will require you to have ActiveSupport
+      # @return [HashWithIndifferentAccess]
+      #
+      def args_with_indifferent_access
+        @args.send(
+          :with_indifferent_access
+        )
       end
 
       #
@@ -97,16 +112,16 @@ module Liquid
       end
 
       #
-      # @param [String] k the key
-      # @param [Object] v the value
+      # @param [String] key the key
+      # @param [Object] val the value
       # @param [Array<Symbol>] skips personal skips.
       # Determines if we should skip in HTML.
       # @return [true,false]
       #
       private
-      def skip_in_html?(k:, v:, skips: [])
-        k == :argv1 || v.is_a?(Array) || skips.include?(k) \
-          || v.is_a?(Hash) || v == false
+      def skip_in_html?(key:, val:, skips: [])
+        key == :argv1 || val.is_a?(Array) || skips.include?(key) \
+          || val.is_a?(Hash) || val == false
       end
 
       #
@@ -129,13 +144,13 @@ module Liquid
       #
       # @return [Array<String,true|false>]
       # Allows you to flip a value based on condition.
-      # @param [String] v the value.
+      # @param [String] val the value.
       #
       private
-      def flip_kv_bool(v)
+      def flip_kv_bool(val)
         [
-          v.gsub(BOOL, '\2'),
-          v.start_with?(TRUE) ? true : false
+          val.gsub(BOOL, '\2'),
+          val.start_with?(TRUE) ? true : false
         ]
       end
 
@@ -178,25 +193,24 @@ module Liquid
           keys = keys.split(KEY).map(&:to_sym)
 
           set_val(
-            v: convert(val),
+            val: convert(val),
             hash: build_hash(keys),
-            k: keys.last
+            key: keys.last
           )
         end
       end
 
-      # --
       private
-      def set_val(k:, v:, hash:)
-        hash[k] << v if hash[k].is_a?(Array)
-        hash[k] = [hash[k]].flatten << v if hash[k] && !hash[k].is_a?(Array)
-        hash[k] = v unless hash[k]
+      def set_val(key:, val:, hash:)
+        hash[key] << val if hash[key].is_a?(Array)
+        hash[key] = [hash[key]].flatten << val if hash[key] && !hash[key].is_a?(Array)
+        hash[key] = val unless hash[key]
       end
 
-      # --
+      #
       # @return [true,false,Float,Integer]
       # Convert a value to a native value.
-      # --
+      #
       private
       def convert(val)
         return if val.nil?
@@ -207,10 +221,10 @@ module Liquid
         val
       end
 
-      # --
+      #
       # Wraps into `#shellsplit`, and first substitutes some values.
       # @return [Array<String>]
-      # --
+      #
       private
       def from_shellwords
         Shellwords.shellsplit(

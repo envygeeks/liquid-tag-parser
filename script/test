@@ -7,11 +7,11 @@ set -e
 
 # --
 hasGem() {
-  if cat Gemfile | grep -qEi "^\s*gem\s+(\"|')$1(\\1)"; then
+  if grep -qEi "^\s*gem\s+(\"|')$1(\\1)" Gemfile; then
     return 0
   else
-    find . -maxdepth 1 -type f -name \*.gemspec | while read f; do
-      if cat "$f" | grep -qEi "(\"|')$1(\\1)"; then
+    find . -maxdepth 1 -type f -name \*.gemspec | while read -r f; do
+      if grep -qEi "(\"|')$1(\\1)" "$f"; then
         return 1
       fi
     done && return 1 || return 0

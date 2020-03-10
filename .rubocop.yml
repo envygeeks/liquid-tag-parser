@@ -1,10 +1,5 @@
 inherit_gem:
   envygeeks-rubocop:
     - rules.yml
-# --
-# 🙃
-# Not really necessary.
-#   Seriously.
-# --
-Naming/MethodParameterName:
-  MinNameLength: 1
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false

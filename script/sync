@@ -38,11 +38,11 @@ copy_to=$PWD
 
 clone_dir=$(mktemp -d)
 git clone $github_url "$clone_dir"
-for d in $(trim global $sync_language); do
+for d in $(trim global "$sync_language"); do
   cd "$clone_dir"
 
   [ ! -d "$d" ] && continue
-  find "$d" -not -path "$d" -type f | while read f; do
+  find "$d" -not -path "$d" -type f | while read -r f; do
     to=$(echo "$f" | sed -e "s/$d\///"); dir=$(dirname "$to")
     if [ "$dir" != "$d" ] && [ "$dir" != "." ]; then
       if [ ! -d "$copy_to/$dir" ]; then
@@ -71,4 +71,4 @@ for d in $(trim global $sync_language); do
   done
 done
 
-rm -rf $clone_dir
+rm -rf "$clone_dir"

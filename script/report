@@ -23,6 +23,6 @@ if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS" = "true" ]; then
     chmod +x ./cctr && ./cctr before-build
   else
     ./cctr after-build --exit-code \
-      $TRAVIS_TEST_RESULT
+      "$TRAVIS_TEST_RESULT"
   fi
 fi
