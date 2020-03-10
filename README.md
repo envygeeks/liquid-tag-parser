@@ -18,9 +18,13 @@ Typically you would take the raw argument data you get from Liquid and ship that
 require "liquid/tag/parser"
 class MyTag < Liquid::Tag
   def initialize(tag, args, tokens)
-    @args = Liquid::Tag::Parser.new(args)
     @raw_args = args
     @tag = tag.to_sym
+    @args = Liquid::Tag::Parser.new(
+      args
+    )
+
+
     @tokens = tokens
     super
   end

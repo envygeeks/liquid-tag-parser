@@ -2,4 +2,4 @@
 
 # Copyright: 2012 - 2018 - MIT License
 
-require_relative "liquid/tag/parser"
+require_relative 'liquid/tag/parser'

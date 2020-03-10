@@ -3,5 +3,5 @@
 # Author: Jordon Bedwell
 # Encoding: utf-8
 
-require "simplecov"
+require 'simplecov'
 SimpleCov.start

@@ -10,14 +10,14 @@
 # --
 task default: [:spec]
 task :spec do
-  exec "script/test"
+  exec 'script/test'
 end
 # --
 # 🔖
 # RSpec, MiniTest, Whatever.
 # --
 task :test do
-  exec "script/test"
+  exec 'script/test'
 end
 # --
 # 🔖
@@ -25,7 +25,7 @@ end
 # Rubocop.
 # --
 task :rubocop do
-  exec "script/lint"
+  exec 'script/lint'
 end
 # --
 # 🔖
@@ -33,10 +33,10 @@ end
 # Rubocop.
 # --
 task :lint do
-  exec "script/lint"
+  exec 'script/lint'
 end
 
 # --
-Dir.glob("script/rake.d/*.rake").each do |v|
+Dir.glob('script/rake.d/*.rake').each do |v|
   load v
 end

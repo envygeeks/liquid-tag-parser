@@ -3,5 +3,5 @@
 # Author: Jordon Bedwell
 # Encoding: utf-8
 
-require "bundler/setup"
-require "liquid/tag/parser"
+require 'bundler/setup'
+require 'liquid/tag/parser'
