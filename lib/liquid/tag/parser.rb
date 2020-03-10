@@ -3,8 +3,8 @@
 # Author: Jordon Bedwell
 # Encoding: utf-8
 
-require "extras/hash"
-require "liquid"
+require 'extras/hash'
+require 'liquid'
 
 module Liquid
   class Tag
@@ -37,7 +37,7 @@ module Liquid
       end
 
       # --
-      FALSE = "!"
+      FALSE = '!'
       FLOAT = %r!\A\d+\.\d+\Z!.freeze
       QUOTE = %r!(["'])([^\1]*)(\1)!.freeze
       SPECIAL = %r{(?<!\\)(@|!|:|=)}.freeze
@@ -46,9 +46,9 @@ module Liquid
       SPECIAL_ESCAPED = %r{\\(@|!|:|=)}.freeze
       KEY = %r{\b(?<!\\):}.freeze
       INT = %r!^\d+$!.freeze
-      TRUE = "@"
+      TRUE = '@'
 
-      def initialize(raw, defaults: {}, sep: "=")
+      def initialize(raw, defaults: {}, sep: '=')
         @sep = sep
         @unescaped_sep = sep
         @rsep = Regexp.escape(sep)
@@ -79,7 +79,7 @@ module Liquid
       def to_html(skip: [])
         skippable_loop(skip: skip, hash: false) do |(k, v), o|
           o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
-        end.join(" ")
+        end.join(' ')
       end
 
       #
@@ -130,8 +130,8 @@ module Liquid
       private
       def flip_kv_bool(v)
         [
-          v.gsub(BOOL, "\\2"),
-          v.start_with?(TRUE) ? true : false,
+          v.gsub(BOOL, '\2'),
+          v.start_with?(TRUE) ? true : false
         ]
       end
 
@@ -159,7 +159,7 @@ module Liquid
         return unless val
 
         val.gsub(@escaped_sep_regexp, @unescaped_sep).gsub(
-          SPECIAL_ESCAPED, "\\1")
+          SPECIAL_ESCAPED, '\1')
       end
 
       private
@@ -173,11 +173,11 @@ module Liquid
           keys, val = val, nil if keys.empty?
           keys = keys.split(KEY).map(&:to_sym)
 
-          set_val({
+          set_val(
             v: convert(val),
             hash: build_hash(keys),
-            k: keys.last,
-          })
+            k: keys.last
+          )
         end
       end
 
@@ -195,6 +195,8 @@ module Liquid
       # --
       private
       def convert(val)
+        return if val.nil?
+        return val if [true, false].include?(val)
         return val.to_f if val =~ FLOAT
         return val.to_i if val =~ INT
 
@@ -208,8 +210,8 @@ module Liquid
       private
       def from_shellwords
         Shellwords.shellsplit(
-          @raw.gsub(SPECIAL, "\\\\\\1")
-              .gsub(UNQUOTED_SPECIAL, "\\\\\\1")
+          @raw.gsub(SPECIAL, '\1')
+              .gsub(UNQUOTED_SPECIAL, '\1')
               .gsub(@sep_regexp, @escaped_sep))
       end
     end
