@@ -1,5 +1,6 @@
 # Frozen-string-literal: true
 # Copyright: 2017 - 2020 - ISC License
+# rubocop:disable Lint/BooleanSymbol
 # Author: Jordon Bedwell
 # Encoding: utf-8
 
