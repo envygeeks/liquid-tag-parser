@@ -21,6 +21,7 @@ module Liquid
       def_delegator :@args, :each_value
       def_delegator :@args, :values_at
       def_delegator :@args, :to_enum
+      def_delegator :@args, :delete
       def_delegator :@args, :map
       def_delegator :@args, :[]=
       def_delegator :@args, :[]

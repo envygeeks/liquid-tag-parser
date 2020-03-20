@@ -40,25 +40,33 @@ describe Liquid::Tag::Parser do
 
     context 'w/ !bool' do
       it 'excludes' do
-        expect(subject.new('!a').to_html).to eq('')
+        expect(subject.new('!a').to_html).to eq(
+          ''
+        )
       end
     end
 
     context 'w/ hash' do
       it "doesn't include" do
-        expect(subject.new('a=1 a=2 b:c=3').to_html).to eq('')
+        expect(subject.new('a=1 a=2 b:c=3').to_html).to eq(
+          ''
+        )
       end
     end
 
     context 'args' do
       it 'converts' do
-        expect(subject.new('a=1').to_html).to eq('a="1"')
+        expect(subject.new('a=1').to_html).to eq(
+          'a="1"'
+        )
       end
     end
 
     context 'w/ argv1' do
       it 'excludes' do
-        expect(subject.new('a').to_html).to eq('')
+        expect(subject.new('a').to_html).to eq(
+          ''
+        )
       end
     end
   end
