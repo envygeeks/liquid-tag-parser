@@ -16,8 +16,12 @@ module Liquid
       def_delegator :@args, :each
       def_delegator :@args, :key?
       def_delegator :@args, :to_h
+      def_delegator :@args, :keys
       def_delegator :@args, :each_key
       def_delegator :@args, :each_with_object
+      def_delegator :@args, :with_indifferent_access
+      def_delegator :@args, :transform_values
+      def_delegator :@args, :transform_keys
       def_delegator :@args, :each_value
       def_delegator :@args, :values_at
       def_delegator :@args, :to_enum
@@ -85,17 +89,6 @@ module Liquid
         skippable_loop(skip: skip, hash: false) do |(k, v), o|
           o << (v == true ? k.to_s : "#{k}=\"#{v}\"")
         end.join(' ')
-      end
-
-      #
-      # indifferent args as a hash
-      # @note this will require you to have ActiveSupport
-      # @return [HashWithIndifferentAccess]
-      #
-      def args_with_indifferent_access
-        @args.send(
-          :with_indifferent_access
-        )
       end
 
       #
